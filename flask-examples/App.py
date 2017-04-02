@@ -32,4 +32,4 @@ def setPerson(name,age):
 def getPerson(id):
     if id >= session[countKey]:
         return "the person you are looking for is not present"
-    return 'name is {0} and age is {1}'.format(session["{0}-name".format(id)],session["{0}-age".format(id)])
+    return render_template('main.html',name=session["{0}-name".format(id)],age=session["{0}-age".format(id)])
