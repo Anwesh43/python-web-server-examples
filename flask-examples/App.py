@@ -1,8 +1,13 @@
 from flask import *
 from config import *
+from mongoengine import *
+from models.Person import *
+from daos.ModelDao import *
+modelDao = ModelDao()
 app = Flask(__name__)
 app.debug = True
 app.secret_key = secretKey
+connect('repdb')
 @app.route('/hello')
 def hello():
     return "hello world"
@@ -33,3 +38,13 @@ def getPerson(id):
     if id >= session[countKey]:
         return "the person you are looking for is not present"
     return render_template('main.html',name=session["{0}-name".format(id)],age=session["{0}-age".format(id)])
+@app.route('/newPerson/<string:name>/<int:age>')
+def newPerson(name,age):
+    modelDao.create(Person,name=name,age=age)
+    return "created a new person"
+@app.route('/persons')
+def getPersons():
+    persons  = modelDao.findObjects(Person)
+    personStr = ""
+    print persons
+    return render_template('persons.html',persons=persons)
